@@ -11,6 +11,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const team = [];
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
@@ -19,102 +20,144 @@ function promptUser() {
     return inquirer.prompt([
         {
             type: "checkbox",
-            message: "Please choose what type of employee you are",
+            message: "Please choose what type of entry you wish to make",
             name: "employeeType",
             choices: [
                 "Manager",
                 "Engineer",
-                "Intern"
+                "Intern",
+                "Finish Entries and Render HTML Doc"
             ]
         },
-
-    ])
-        .then(data => {
-
-            if (data.employeeType == "Manager" || "Engineer" || "Intern") {
-
-                return inquirer.prompt([
-                    {
-                        type: "input",
-                        name: "name",
-                        message: "Please enter your name"
-                    },
-                    {
-                        type: "input",
-                        name: "id",
-                        message: "Please enter your ID"
-                    },
-                    {
-                        type: "input",
-                        name: "role",
-                        message: "Please enter your role"
-                    },
-                    {
-                        type: "input",
-                        name: "email",
-                        message: "Please enter your email"
-                    },
+        {
+            type: "input",
+            name: "name",
+            message: "Please enter new name",
+            when: (answers) => {
+                if (answers.employeeType == "Finish Entries and Render HTML Doc") {
+                    return false
+                }
+                else return true
+            }
 
 
-                ]);
+        },
+        {
+            type: "input",
+            name: "id",
+            message: "Please enter your ID",
+            when: (answers) => {
+                if (answers.employeeType == "Finish Entries and Render HTML Doc") {
+                    return false
+                }
+                else return true
+            }
+        },
+
+        {
+            type: "input",
+            name: "email",
+            message: "Please enter your email",
+            when: (answers) => {
+                if (answers.employeeType == "Finish Entries and Render HTML Doc") {
+                    return false
+
+                }
+                else return true
+            }
+        },
+
+        {
+            type: "input",
+            name: "officeNumber",
+            message: "Please enter your Office Number",
+            when: (answers) => {
+                if (answers.employeeType == "Manager") {
+                    return true
+                }
+                else
+                    return false
+
+            }
+
+        },
+
+        {
+            type: "input",
+            name: "githubusername",
+            message: "Please enter your Github Username",
+            when: (answers) => {
+                if (answers.employeeType == "Engineer") {
+                    return true
+                }
+                else
+                    return false
 
             }
 
 
+        },
 
-            if ((data.employeeType == "Manager")) {
-                function promptManager() {
-                    return inquirer.prompt([
-                        {
-                            type: "input",
-                            name: "officeNumber",
-                            message: "Please enter your Office Number"
-                        },
-
-                    ]);
-
+        {
+            type: "input",
+            name: "school",
+            message: "Please enter your School",
+            when: (answers) => {
+                if (answers.employeeType == "Intern") {
+                    return true
                 }
+                else
+                    return false
 
-                if ((data.employeeType == "Engineer")) {
-                    function promptEngineer() {
-                        return inquirer.prompt([
-                            {
-                                type: "input",
-                                name: "githubusername",
-                                message: "Please enter your Github Username"
-                            },
-
-                        ]);
-
-                    }
-                }
-
-                if ((data.employeeType == "Intern")) {
-                    function promptIntern() {
-                        return inquirer.prompt([
-                            {
-                                type: "input",
-                                name: "school",
-                                message: "Please enter your School"
-                            },
-
-                        ]);
-
-                    }
-                }
             }
+
         }
+
+
+    ]).then((answers) => {
+        if (answers.employeeType == "Manager") {
+            const teammember = new Manager(answers.name, answers.id, answers.email, answers.officenumber);
+            team.push(teammember)
+            promptUser();
+        }
+        else if (answers.employeeType == "Engineer") {
+            const teammember = new Engineer(answers.name, answers.id, answers.email, answers.githubusername);
+            team.push(teammember)
+            promptUser();
+        }
+        else if (answers.employeeType == "Intern") {
+            const teammember = new Intern(answers.name, answers.id, answers.email, answers.school);
+            team.push(teammember)
+            promptUser();
+        }
+        else {
+            const html = render(team);
+            console.log(html);
+            fs.writeFileSync("./output/team.html", html);
+        }
+    })
+
+
+
+
+}
+
+promptUser();
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
 
 
+//render();
 
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
 // `output` folder. You can use the variable `outputPath` above target this location.
 // Hint: you may need to check if the `output` folder exists and create it if it
 // does not.
+
+
 
 // HINT: each employee type (manager, engineer, or intern) has slightly different
 // information; write your code to ask different questions via inquirer depending on
