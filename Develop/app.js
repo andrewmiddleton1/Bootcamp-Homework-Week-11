@@ -21,7 +21,7 @@ function promptUser() {
         {
             type: "checkbox",
             message: "Please choose what type of entry you wish to make",
-            name: "employeeType",
+            name: "role",
             choices: [
                 "Manager",
                 "Engineer",
@@ -34,7 +34,7 @@ function promptUser() {
             name: "name",
             message: "Please enter new name",
             when: (answers) => {
-                if (answers.employeeType == "Finish Entries and Render HTML Doc") {
+                if (answers.role == "Finish Entries and Render HTML Doc") {
                     return false
                 }
                 else return true
@@ -47,7 +47,7 @@ function promptUser() {
             name: "id",
             message: "Please enter your ID",
             when: (answers) => {
-                if (answers.employeeType == "Finish Entries and Render HTML Doc") {
+                if (answers.role == "Finish Entries and Render HTML Doc") {
                     return false
                 }
                 else return true
@@ -59,7 +59,7 @@ function promptUser() {
             name: "email",
             message: "Please enter your email",
             when: (answers) => {
-                if (answers.employeeType == "Finish Entries and Render HTML Doc") {
+                if (answers.role == "Finish Entries and Render HTML Doc") {
                     return false
 
                 }
@@ -69,10 +69,10 @@ function promptUser() {
 
         {
             type: "input",
-            name: "officeNumber",
+            name: "officenumber",
             message: "Please enter your Office Number",
             when: (answers) => {
-                if (answers.employeeType == "Manager") {
+                if (answers.role == "Manager") {
                     return true
                 }
                 else
@@ -84,10 +84,10 @@ function promptUser() {
 
         {
             type: "input",
-            name: "githubusername",
+            name: "githubuser",
             message: "Please enter your Github Username",
             when: (answers) => {
-                if (answers.employeeType == "Engineer") {
+                if (answers.role == "Engineer") {
                     return true
                 }
                 else
@@ -103,7 +103,7 @@ function promptUser() {
             name: "school",
             message: "Please enter your School",
             when: (answers) => {
-                if (answers.employeeType == "Intern") {
+                if (answers.role == "Intern") {
                     return true
                 }
                 else
@@ -115,17 +115,17 @@ function promptUser() {
 
 
     ]).then((answers) => {
-        if (answers.employeeType == "Manager") {
+        if (answers.role == "Manager") {
             const teammember = new Manager(answers.name, answers.id, answers.email, answers.officenumber);
             team.push(teammember)
             promptUser();
         }
-        else if (answers.employeeType == "Engineer") {
-            const teammember = new Engineer(answers.name, answers.id, answers.email, answers.githubusername);
+        else if (answers.role == "Engineer") {
+            const teammember = new Engineer(answers.name, answers.id, answers.email, answers.githubuser);
             team.push(teammember)
             promptUser();
         }
-        else if (answers.employeeType == "Intern") {
+        else if (answers.role == "Intern") {
             const teammember = new Intern(answers.name, answers.id, answers.email, answers.school);
             team.push(teammember)
             promptUser();
